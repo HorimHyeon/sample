@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe Coding - 코딩, 흐름을 타다</title>
+    <style>
+        /* --- 초기화 및 변수 설정 --- */
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #f8fafc;
+            --primary-color: #8b5cf6;
+            --secondary-color: #ec4899;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* --- 네비게이션 --- */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        nav ul {
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav a {
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover { color: var(--primary-color); }
+
+        .cta-btn-small {
+            padding: 0.5rem 1.2rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 20px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        
+        .cta-btn-small:hover { transform: scale(1.05); }
+
+        /* 모바일 메뉴 아이콘 (숨김 처리) */
+        .menu-icon { display: none; cursor: pointer; font-size: 1.5rem; }
+
+        /* --- 히어로 섹션 --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 배경 장식 원 */
+        .glow-circle {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1;
+        }
+        .gc-1 { top: -100px; left: -100px; }
+        .gc-2 { bottom: -100px; right: -100px; }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero h1 span {
+            display: block;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero h1 .gradient-text {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #94a3b8;
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+        }
+
+        .cta-btn-large {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 30px;
+            font-weight: 700;
+            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
+            transition: all 0.3s;
+        }
+
+        .cta-btn-large:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(236, 72, 153, 0.4);
+        }
+
+        /* --- 공통 섹션 스타일 --- */
+        section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 4rem;
+            font-weight: 700;
+        }
+
+        /* --- 특징 섹션 (카드 그리드) --- */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 2.5rem;
+            border-radius: 16px;
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .icon {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: #cbd5e1;
+        }
+
+        /* --- 작동 방식 섹션 --- */
+        .step-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            background: var(--glass-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .step-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.1);
+            min-width: 80px;
+        }
+
+        .step-content h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .step-content p { color: #cbd5e1; }
+
+        /* --- Footer --- */
+        footer {
+            background: #020617;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 4rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        footer p { color: #64748b; font-size: 0.9rem; }
+
+        /* --- 애니메이션 (스크롤 트리거용) --- */
+        .hidden {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- 반응형 디자인 --- */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            nav ul { display: none; } /* 모바일에서 메뉴 숨김 (간소화) */
+            .menu-icon { display: block; }
+            .step { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Vibe Coding</div>
+        <nav>
+            <ul>
+                <li><a href="#features">기능 소개</a></li>
+                <li><a href="#how-it-works">사용 방법</a></li>
+                <li><a href="#pricing">요금제</a></li>
+            </ul>
+        </nav>
+        <a href="#" class="cta-btn-small">시작하기</a>
+        <div class="menu-icon">☰</div>
+    </header>
+
+    <section class="hero">
+        <div class="glow-circle gc-1"></div>
+        <div class="glow-circle gc-2"></div>
+        <h1>
+            <span>복잡한 코드는 잊으세요</span>
+            <span class="gradient-text">코딩, 이제 '바이브'로</span>
+        </h1>
+        <p>
+            AI 기반의 직관적인 흐름. 생각하는 그대로 코드가 완성됩니다.<br>
+            개발자가 몰입할 수 있는 최고의 환경을 경험해보세요.
+        </p>
+        <a href="#" class="cta-btn-large">무료로 체험하기</a>
+    </section>
+
+    <section id="features">
+        <h2 class="section-title hidden">왜 Vibe Coding인가요?</h2>
+        <div class="features-grid">
+            <div class="feature-card hidden">
+                <div class="icon">✨</div>
+                <h3>AI 자동 완성</h3>
+                <p>단순한 자동 완성을 넘어, 문맥을 이해하고 최적의 로직을 제안합니다. 타이핑은 줄이고 생각에 집중하세요.</p>
+            </div>
+            <div class="feature-card hidden">
+                <div class="icon">⚡</div>
+                <h3>초고속 렌더링</h3>
+                <p>작성한 코드가 실시간으로 화면에 반영됩니다. 기다림 없는 개발 경험을 제공합니다.</p>
+            </div>
+            <div class="feature-card hidden">
+                <div class="icon">🤝</div>
+                <h3>실시간 협업</h3>
+                <p>팀원들과 같은 화면에서 동시에 코드를 수정하고 리뷰하세요. 링크 하나로 모든 것이 연결됩니다.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works">
+        <h2 class="section-title hidden">간단한 시작 방법</h2>
+        <div class="step-container">
+            <div class="step hidden">
+                <div class="step-number">01</div>
+                <div class="step-content">
+                    <h3>프로젝트 생성</h3>
+                    <p>원하는 언어와 프레임워크를 선택하면 AI가 최적의 초기 설정을 3초 만에 완료합니다.</p>
+                </div>
+            </div>
+            <div class="step hidden">
+                <div class="step-number">02</div>
+                <div class="step-content">
+                    <h3>자연어로 명령</h3>
+                    <p>"로그인 페이지 만들어줘"라고 입력하세요. Vibe AI가 구조와 스타일을 제안합니다.</p>
+                </div>
+            </div>
+            <div class="step hidden">
+                <div class="step-number">03</div>
+                <div class="step-content">
+                    <h3>즉시 배포</h3>
+                    <p>클릭 한 번으로 전 세계에 당신의 웹사이트를 배포하세요. 서버 설정은 필요 없습니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="logo" style="font-size: 1.2rem; margin-bottom: 1rem;">Vibe Coding</div>
+        <p>&copy; 2025 Vibe Coding Inc. All rights reserved.</p>
+        <p style="margin-top: 0.5rem; opacity: 0.5;">Jeju-si, Jeju-do, South Korea</p>
+    </footer>
+
+    <script>
+        // 스크롤 애니메이션 관찰자 (Intersection Observer)
+        const observerOptions = {
+            threshold: 0.1 // 요소가 10% 보일 때 트리거
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // 애니메이션 적용할 요소들 선택
+        const hiddenElements = document.querySelectorAll('.hidden');
+        hiddenElements.forEach((el) => observer.observe(el));
+
+        // 간단한 모바일 메뉴 토글 (콘솔 확인용 - 실제 구현 시 nav class 조작)
+        const menuIcon = document.querySelector('.menu-icon');
+        menuIcon.addEventListener('click', () => {
+            alert('모바일 메뉴가 클릭되었습니다. (실제 기능은 추가 구현 필요)');
+        });
+    </script>
+</body>
+</html>
